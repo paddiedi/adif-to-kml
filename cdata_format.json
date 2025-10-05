@@ -1,0 +1,13 @@
+{
+    "QSO_DATE": "QSO Date",
+    "TIME_ON": "Time On",
+    "TIME_OFF": "Time Off",
+    "BAND": "Band",
+    "FREQ": "Frequency",
+    "MODE": "Mode",
+    "RST_RCVD": "RST Received",
+    "TX_PWR": "Power",
+    "OPERATOR": "Operator",
+    "CONTEST_ID": "Contest",
+    "CQZ": "CQ Zone"
+}

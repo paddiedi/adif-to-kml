@@ -1,5 +1,4 @@
-# A-R Ensimmäinen väli -180->180 (18 kokonaisuudessaan)
-# Ensimmäinen on Longitude, joka toinen Latitude.
+
 # 1. Field A-R
 # 2. Square 0-9
 # 3. Subsquare a-x
@@ -12,9 +11,9 @@ def calc_coords(maiden_string: str):
     Translates maiden coordinates into longitude/latitude
     E/N (east, north) form.
     '''
-    print(maiden_string)
+    #print(maiden_string)
     if maiden_string == "":
-        print("WARNING MAIDENHEAD NOT DEFINED, RETURNING (0,0)")
+        #print("WARNING MAIDENHEAD NOT DEFINED, RETURNING (0,0)")
         return (0,0)
     # Init longitude and latitude ranges
     longitude_init = -180+(ALPHABET.index(maiden_string[0].upper()))*20
