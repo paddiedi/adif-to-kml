@@ -5,7 +5,7 @@ from extract_adif import extract_adif_kml
 from extract_adif import gen_adif_dictionary
 import sys
 import json
-
+DEFAULT_OUTPUT_FILE="output.kml"
 def upload_file():
     file_path = filedialog.askopenfilename(title="Select a File")
     if file_path:
@@ -92,38 +92,41 @@ def render_window():
        root.quit()
        root.destroy()
        sys.exit()
-    # On exceptions, call this command
-    def handle_upload():
-      name = name_entry.get().strip()
-      description = description_entry.get().strip()
-      use_defaults = use_defaults_var.get()
-      filename = file_name_entry.get().strip()
-      if filename == "" or not filename:
-         filename == "output.kml"
-      if not name or not description:
-        messagebox.showerror("Error", "Please fill in both Name and Description fields!")
-        return
-      file_path = upload_file()
-      if file_path:
-        if use_defaults:
-          convert_into_kml(filename, name, description, extract_adif_kml(file_path, use_defaults), use_defaults)
-        else:
-           entry_dictionary_id = select_options(gen_adif_dictionary(file_path))
-           try:
-              with open("cdata_format.json", "r") as kml_format_file:
-                kml_format = json.load(kml_format_file)
-           except FileNotFoundError:
-              messagebox.showerror("KML_format json file not found, exiting...")
-              exit()
 
-           #print(entry_dictionary_id)
-           if "CALL" not in entry_dictionary_id or "GRIDSQUARE" not in entry_dictionary_id:
-              print("Error", "You dummy, why did you take CALL and GRIDSQUARE off :D Now exiting...")
-              exit()
-           else:
-              convert_into_kml(filename, name, description, extract_adif_kml(file_path, use_defaults, entry_dictionary_id=entry_dictionary_id), use_defaults, format=kml_format)
-           messagebox.showinfo(message=f"Conversion succesful, open {filename} to see the result.", title="Conversion success")
-           exit()
+    def handle_upload():
+      try:
+        name = name_entry.get().strip()
+        description = description_entry.get().strip()
+        use_defaults = use_defaults_var.get()
+        filename = file_name_entry.get().strip()
+        if filename == "" or filename == None:
+           filename = DEFAULT_OUTPUT_FILE
+        if not name or not description:
+          messagebox.showerror("Error", "Please fill in both Name and Description fields!")
+          return
+        file_path = upload_file()
+        if file_path:
+          if use_defaults:
+            convert_into_kml(filename, name, description, extract_adif_kml(file_path, use_defaults), use_defaults)
+          else:
+            entry_id_list = select_options(gen_adif_dictionary(file_path))
+            try:
+                with open("cdata_format.json", "r") as kml_format_file:
+                  kml_format = json.load(kml_format_file)
+            except FileNotFoundError:
+                messagebox.showerror("KML_format json file not found, exiting...")
+                exit()
+
+            #print(entry_dictionary_id)
+            if "CALL" not in entry_id_list or "GRIDSQUARE" not in entry_id_list:
+                raise Exception("Error", "You dummy, why did you take CALL and GRIDSQUARE off :D Now exiting...")
+            else:
+                convert_into_kml(filename, name, description, extract_adif_kml(file_path, use_defaults, entry_id_list=entry_id_list), use_defaults, format=kml_format)
+            messagebox.showinfo(message=f"Conversion succesful, open {filename} to see the result.", title="Conversion success")
+            exit()
+      except Exception as error:
+         messagebox.showerror(title="Crash report", message=error)
+         exit()
     upload_button = tk.Button(root, text="Upload File", command=handle_upload)
     upload_button.pack(pady=10)
 

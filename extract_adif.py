@@ -1,4 +1,4 @@
-default_dictionary_id = [
+DEFAULT_ID_LIST = [
     "CALL",
     "QSO_DATE",
     "TIME_ON",
@@ -40,15 +40,15 @@ def extract_adif_kml(file_path, use_defaults, **kwargs):
   with open(file_path) as adif_input_file:
     data = []
     if use_defaults:
-       entry_dictionary_id = default_dictionary_id
+       entry_id_list = DEFAULT_ID_LIST
        print("Using default ADIF config")
     else:
-       entry_dictionary_id = kwargs.get("entry_dictionary_id", None)
+       entry_id_list = kwargs.get("entry_id_list", None)
     for line in adif_input_file:
-        entry_dictionary = {key: "" for key in entry_dictionary_id}
+        entry_dictionary = {key: "" for key in entry_id_list}
         entries = line.split()
         for i in entries:
-            for name in entry_dictionary_id:
+            for name in entry_id_list:
                 stripped = i.strip()
                 if stripped.startswith(f"<{name}:"):
                     # Look for where the > char is, also this looks like spagetti :/

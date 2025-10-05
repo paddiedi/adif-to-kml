@@ -1,4 +1,4 @@
-kml_start_template = \
+KML_START_TEMPLATE = \
 """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
@@ -16,10 +16,10 @@ kml_start_template = \
       </IconStyle>
     </Style>
 """
-kml_end_template = \
+KML_END_TEMPLATE = \
 """\n</Document>\n</kml>
 """
-kml_placemark_template = \
+KML_PLACEMARK_TEMPLATE = \
 """
 <Placemark>
   <name>{call}</name>
@@ -32,7 +32,7 @@ kml_placemark_template = \
   </Point>
 </Placemark>
 """
-default_format = {
+DEFAULT_FORMAT = {
     "QSO_DATE": "QSO Date",
     "TIME_ON": "Time On",
     "TIME_OFF": "Time Off",
@@ -58,16 +58,16 @@ def convert_into_kml(filename, kml_name, kml_description, kml_entries, use_defau
 
     if use_defaults:
         print("Using default CDATA-format")
-        format = default_format
+        format = DEFAULT_FORMAT
     else:
         format = kwargs.get("format", None)
     print(format)
     with open(filename, "w") as output_file:
-        output_file.write(kml_start_template.format(name=kml_name, description=kml_description))
+        output_file.write(KML_START_TEMPLATE.format(name=kml_name, description=kml_description))
         
         for kml_entry in kml_entries:
             cdata = cdata_format(kml_entry, format)
             coords = calc_coords(kml_entry["GRIDSQUARE"])
-            output_file.write(kml_placemark_template.format(cdata=cdata, coord1=coords[0], coord2=coords[1], call=kml_entry["CALL"]))
-        output_file.write(kml_end_template)
+            output_file.write(KML_PLACEMARK_TEMPLATE.format(cdata=cdata, coord1=coords[0], coord2=coords[1], call=kml_entry["CALL"]))
+        output_file.write(KML_END_TEMPLATE)
         # Oletan että GRIDSQUARE ja CALL nimet eivät muutu historian saatossa :D
