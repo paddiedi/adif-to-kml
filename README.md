@@ -26,7 +26,7 @@ A simple Python application to convert radio amateur ADIF data into KML for mapp
    python main.py
    ```
 
-3. Use the GUI to select your ADIF file and choose a location for the generated KML file.
+3. Use the GUI to select your ADIF file and choose a name for the generated KML file.
 
 ## Building a Standalone Windows Executable (.exe)
 
