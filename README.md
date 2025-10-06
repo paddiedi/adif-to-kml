@@ -45,9 +45,6 @@ To create a standalone executable for Windows, you can use [PyInstaller](https:/
    ```bash
    pyinstaller --onefile --windowed main.py
    ```
-   - `--onefile`: Package everything into a single .exe.
-   - `--windowed`: Prevents a console window from appearing (ideal for GUI apps).
-
 3. The generated executable will be found in the `dist/` directory.
 
 ## License
