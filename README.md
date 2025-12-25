@@ -1,38 +1,15 @@
 # adif-to-kml
 
-A simple Python application to convert radio amateur ADIF data into KML for mapping and visualization. This tool features an easy-to-use graphical interface built with Tkinter.
-
-## Features
-
-- **ADIF to KML Conversion**: Easily transform your Amateur Data Interchange Format (ADIF) logs into Keyhole Markup Language (KML) files for use in mapping applications like Google Earth.
-- **User-Friendly GUI**: Built with Tkinter, making it accessible for users of all experience levels.
-- **Cross-platform**: Works on Windows, macOS, and Linux (requires Python). For Windows, there is an executable (.exe) file.
+A simple Python application to convert radio amateur ADIF data into KML.
 
 ## Requirements
 
 - Python 3.7 or later
-- Tkinter (usually included with Python)
+- Tkinter
 
-## Usage
+For Windows there's a exe. Other people than Windows users, can just download the repo and run it with python.
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/paddiedi/adif-to-kml.git
-   cd adif-to-kml
-   ```
-
-2. Run the application:
-   ```bash
-   python main.py
-   ```
-
-3. Use the GUI to select your ADIF file and choose a name for the generated KML file.
-
-Windows users can also just download the latest release .exe-file, run it, and do stuff on step 3.
-
-**NOTE** The executable, will put the output file into the same root where it is being run.
-
-## Building a Standalone Windows Executable (.exe)
+## Building with pyinstaller
 
 To create a standalone executable for Windows, you can use [PyInstaller](https://pyinstaller.org/):
 
@@ -40,7 +17,6 @@ To create a standalone executable for Windows, you can use [PyInstaller](https:/
    ```bash
    pip install pyinstaller
    ```
-
 2. **Build the executable**:
    ```bash
    pyinstaller --onefile --windowed main.py
@@ -54,7 +30,7 @@ MIT License. See [LICENSE](LICENSE) for details.
 ## Acknowledgments
 
 - Thx OH5RW for the inspiration.
-- Built using Python and Tkinter.
+- Created using Python and Tkinter.
 
 ---
 
