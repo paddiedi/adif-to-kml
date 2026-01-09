@@ -30,7 +30,6 @@ MIT License. See [LICENSE](LICENSE) for details.
 ## Acknowledgments
 
 - Thx OH5RW for the inspiration.
-- Created using Python and Tkinter.
 
 ---
 
