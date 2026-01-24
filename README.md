@@ -2,6 +2,8 @@
 
 A simple Python application to convert radio amateur ADIF data into KML.
 
+NOTE: if the ADIF file does not have KML coordinates, the program will just assume the coordinates to be (0,0).
+
 ## Requirements
 
 - Python 3.7 or later
