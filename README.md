@@ -8,6 +8,8 @@ NOTE: if the ADIF file does not have KML coordinates, the program will just assu
 
 - Python 3.7 or later
 - Tkinter
+- FTFY https://github.com/rspeer/python-ftfy
+- PyYAML https://pypi.org/project/PyYAML/
 
 For Windows there's a exe. Other people than Windows users, can just download the repo and run it with python.
 
