@@ -22,6 +22,6 @@ MIT License. See [LICENSE](LICENSE) for details.
 - Thx OH5RW for the inspiration.
 
 ---
-U can find more about ADIF specifications / fileformat here: https://www.adif.org/100/adif_100.htm
+U can find more about ADIF specifications / fileformat here: https://www.adif.org/
 
 **Cheers**
