@@ -1,73 +1,46 @@
-KML_START_TEMPLATE = \
-"""<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>{name}</name>
-    <description>{description}</description>
-
-    <!-- Optional Style for CW QSOs -->
-    <Style id="CWStyle">
-      <IconStyle>
-        <color>ff00ff00</color> <!-- Green -->
-        <scale>1.2</scale>
-        <Icon>
-          <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
-        </Icon>
-      </IconStyle>
-    </Style>
-"""
-KML_END_TEMPLATE = \
-"""\n</Document>\n</kml>
-"""
-KML_PLACEMARK_TEMPLATE = \
-"""
-<Placemark>
-  <name>{call}</name>
-  <description>
-    <![CDATA[\n{cdata}
-    ]]>
-  </description>
-  <Point>
-    <coordinates>{coord1},{coord2},0</coordinates>
-  </Point>
-</Placemark>
-"""
-DEFAULT_FORMAT = {
-    "QSO_DATE": "QSO Date",
-    "TIME_ON": "Time On",
-    "TIME_OFF": "Time Off",
-    "BAND": "Band",
-    "FREQ": "Frequency",
-    "MODE": "Mode",
-    "RST_RCVD": "RST Received",
-    "TX_PWR": "Power",
-    "OPERATOR": "Operator",
-    "CONTEST_ID": "Contest",
-    "CQZ": "CQ Zone"
-}
-from grid import calc_coords
-
-def cdata_format(kml_entries, format):
-
+from coords import maidenhead_transform
+from coords import parse_deg_min
+def cdata_format(kml_entry, format, chosen_entries):
+    print(kml_entry)
+    try:
+        cdata = """"""
+        for key, value in format.items():
+            cdata += f"{value}: {kml_entry[key]}</br>\n"
+        return cdata[:-6] # -6 removing the last </br>.
+    except Exception as error:
+        #print("KML_BUILD formatting error: ", error)
+        pass
+    # Formatting will always bypass the chosen entries. If one wants
+    # the data formatted, then they should just edit cdata_format.json file.
+    # Attempt to create cdata without using the specified formatting:
     cdata = """"""
-    for key, value in format.items():
-        cdata += f"{value}: {kml_entries[key]}</br>\n"
-    return cdata[:-6] # -6 removing the last </br>.
+    for key in chosen_entries:
+        if key in kml_entry:
+          cdata += f"{key}: {kml_entry[key]}<br>\n"
+    return cdata[:-6]
 
-def convert_into_kml(filename, kml_name, kml_description, kml_entries, use_defaults, **kwargs):
-
-    if use_defaults:
-        print("Using default CDATA-format")
-        format = DEFAULT_FORMAT
-    else:
-        format = kwargs.get("format", None)
-    print(format)
+def convert_into_kml(filename, kml_name, kml_description, records, alias, custom_format, chosen_entries, kml_template, skip_on_null_coords):
+    format = custom_format
+    GRIDSQUARE_ALIAS = alias["GRIDSQUARE_ALIAS"]
+    CALL_ALIAS = alias["CALL_ALIAS"]
+    LAT_ALIAS = alias["LAT_ALIAS"]
+    LON_ALIAS = alias["LON_ALIAS"]
     with open(filename, "w") as output_file:
-        output_file.write(KML_START_TEMPLATE.format(name=kml_name, description=kml_description))
+        output_file.write(kml_template["START"].format(name=kml_name, description=kml_description))
         
-        for kml_entry in kml_entries:
-            cdata = cdata_format(kml_entry, format)
-            coords = calc_coords(kml_entry["GRIDSQUARE"])
-            output_file.write(KML_PLACEMARK_TEMPLATE.format(cdata=cdata, coord1=coords[0], coord2=coords[1], call=kml_entry["CALL"]))
-        output_file.write(KML_END_TEMPLATE)
-        # Oletan että GRIDSQUARE ja CALL nimet eivät muutu historian saatossa :D
+        for kml_entry in records:
+            cdata = cdata_format(kml_entry, format, chosen_entries) # Custom data, eg. everything else except coordinates etc.
+            if alias["LAT_ALIAS"] in kml_entry and alias["LON_ALIAS"] in kml_entry:
+                coords = (parse_deg_min(kml_entry[LON_ALIAS]), parse_deg_min(kml_entry[LAT_ALIAS])) # Third coord is altitude?
+            elif GRIDSQUARE_ALIAS in kml_entry:
+                coords = maidenhead_transform(kml_entry[GRIDSQUARE_ALIAS])
+            else:
+                if CALL_ALIAS in kml_entry:
+                  print(f"Did not find coordinates for: {kml_entry[CALL_ALIAS]}")
+                print("Did not find callsign, or any coordinates. Using (0,0)/skipping.")
+                coords = (0,0)
+            if coords == (0,0) and skip_on_null_coords == "True":
+                continue
+            
+            output_file.write(kml_template["PLACEMARK"].format(cdata=cdata, coord1=coords[0], coord2=coords[1], call=kml_entry[CALL_ALIAS]))
+        output_file.write(kml_template["KML_END"])

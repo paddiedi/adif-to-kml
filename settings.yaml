@@ -1,0 +1,83 @@
+# Settings file for ADIF-to-kml.
+# Here you can change the looks, and likes of your KML file.
+# There are also some minor tweaks. The problem with logger programs is that
+# many variable names change depending on the program. Thus, I've setup
+# some alias variables. Btw the default formats are based on what I've
+# seen most commonly. Please if your adi file does not format correctly,
+# tweak the values by checking what they are in the log file.
+
+# Cheers and enjoy.
+
+KML_START_TEMPLATE: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <kml xmlns="http://www.opengis.net/kml/2.2">
+    <Document>
+      <name>{name}</name>
+      <description>{description}</description>
+
+      <!-- Optional Style for CW QSOs -->
+      <Style id="CWStyle">
+        <IconStyle>
+          <color>ff00ff00</color> <!-- Green -->
+          <scale>1.2</scale>
+          <Icon>
+            <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+          </Icon>
+        </IconStyle>
+      </Style>
+# Don't change ts tho!
+KML_END_TEMPLATE: |
+  </Document>
+  </kml>
+
+KML_PLACEMARK_TEMPLATE: |
+  <Placemark>
+    <name>{call}</name>
+    <description>
+      <![CDATA[
+  {cdata}
+      ]]>
+    </description>
+    <Point>
+      <coordinates>{coord1}, {coord2}</coordinates>
+    </Point>
+  </Placemark>
+
+KML_SIMPLEDATA: "<Simpledata name={entry_name}>{entry_data}</Simpledata>"
+
+DEFAULT_FORMAT:
+  QSO_DATE: "QSO Date"
+  TIME_ON: "Time On"
+  TIME_OFF: "Time Off"
+  BAND: "Band"
+  FREQ: "Frequency"
+  MODE: "Mode"
+  RST_RCVD: "RST Received"
+  TX_PWR: "Power"
+  OPERATOR: "Operator"
+  CONTEST_ID: "Contest"
+  CQZ: "CQ Zone"
+
+CDATA_FORMAT: {
+    "QSO_DATE": "QSO Date",
+    "TIME_ON": "Time On",
+    "TIME_OFF": "Time Off",
+    "BAND": "Band",
+    "FREQ": "Frequency",
+    "MODE": "Mode",
+    "RST_RCVD": "RST Received",
+    "TX_PWR": "Power",
+    "OPERATOR": "Operator",
+    "CONTEST_ID": "Contest",
+    "CQZ": "CQ Zone"
+}
+
+ALIASES:
+  GRIDSQUARE_ALIAS: "gridsquare"
+  CALL_ALIAS: "call"
+  LAT_ALIAS: "lat"
+  LON_ALIAS: "lon"
+# Type booleans as "True" and "False"
+SKIP_ON_NULL_COORDS: "True"
+
+OUTPUT_FILE: "output.kml"

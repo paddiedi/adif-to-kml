@@ -1,19 +1,30 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from kmlbuild import convert_into_kml
-from extract_adif import extract_adif_kml
-from extract_adif import gen_adif_dictionary
+import extract_adif
 import sys
-import json
+import yaml
 DEFAULT_OUTPUT_FILE="output.kml"
+#with open("aliases.json") as alias_file:
+   #ALIASES = json.load(alias_file)
+def get_settings():
+   with open("settings.yaml") as settings_file:
+    try:
+      data = yaml.safe_load(settings_file)
+      print(data)
+    except Exception:
+        raise "Could not find settings file!"
+    print("Settings found!")
+    return data
+SETTINGS = get_settings()
 def upload_file():
-    file_path = filedialog.askopenfilename(title="Select a File")
-    if file_path:
-        messagebox.showinfo("File Selected", f"You selected: {file_path}")
-        return file_path
+    filepath = filedialog.askopenfilename(title="Select a File")
+    if filepath:
+        messagebox.showinfo("File Selected", f"You selected: {filepath}")
+        return filepath
     return None
 
-def render_window():
+def main():
     root = tk.Tk()
     root.title("ADIF-KML CONVERTER")
     root.geometry("600x400")
@@ -95,35 +106,48 @@ def render_window():
 
     def handle_upload():
       try:
+
         name = name_entry.get().strip()
         description = description_entry.get().strip()
         use_defaults = use_defaults_var.get()
         filename = file_name_entry.get().strip()
         if filename == "" or filename == None:
-           filename = DEFAULT_OUTPUT_FILE
+           filename = SETTINGS["OUTPUT_FILE"]
         if not name or not description:
           messagebox.showerror("Error", "Please fill in both Name and Description fields!")
           return
-        file_path = upload_file()
-        if file_path:
-          if use_defaults:
-            convert_into_kml(filename, name, description, extract_adif_kml(file_path, use_defaults), use_defaults)
-          else:
-            entry_id_list = select_options(gen_adif_dictionary(file_path))
-            try:
-                with open("cdata_format.json", "r") as kml_format_file:
-                  kml_format = json.load(kml_format_file)
-            except FileNotFoundError:
-                messagebox.showerror("KML_format json file not found, exiting...")
-                exit()
+        filepath = upload_file()
+        if filepath:
+          # Parse the adif file for all the entries
+          # Also using ftfy to fix some unicode errors :)
+          adif_parser = extract_adif.adif_parser(filepath, settings="")
+          custom_format = SETTINGS["DEFAULT_FORMAT"]
+          data = [record for record in adif_parser]
+          record_ids = adif_parser.records
+          #print(SETTINGS["ALIASES"])
+          #print(record_ids)
+          entry_id_list = []
+          if not use_defaults:
+            entry_id_list = select_options(record_ids)
+            custom_format = SETTINGS["CDATA_FORMAT"]
 
-            #print(entry_dictionary_id)
-            if "CALL" not in entry_id_list or "GRIDSQUARE" not in entry_id_list:
-                raise Exception("Error", "You dummy, why did you take CALL and GRIDSQUARE off :D Now exiting...")
-            else:
-                convert_into_kml(filename, name, description, extract_adif_kml(file_path, use_defaults, entry_id_list=entry_id_list), use_defaults, format=kml_format)
-            messagebox.showinfo(message=f"Conversion succesful, open {filename} to see the result.", title="Conversion success")
-            exit()
+          convert_into_kml(
+              filename,
+              name,
+              description,
+              data,
+              alias=SETTINGS["ALIASES"],
+              custom_format=custom_format,
+              chosen_entries=entry_id_list,
+              kml_template={
+                  "START": SETTINGS["KML_START_TEMPLATE"],
+                  "KML_END": SETTINGS["KML_END_TEMPLATE"],
+                  "PLACEMARK": SETTINGS["KML_PLACEMARK_TEMPLATE"],
+                  "SIMPLEDATA": SETTINGS["KML_SIMPLEDATA"],
+              }, skip_on_null_coords=SETTINGS["SKIP_ON_NULL_COORDS"]
+          )
+          messagebox.showinfo(message=f"Conversion succesful, open {filename} to see the result.", title="Conversion success")
+          exit()
       except Exception as error:
          messagebox.showerror(title="Crash report", message=error)
          exit()
@@ -136,4 +160,4 @@ def render_window():
     root.mainloop()
 
 if __name__ == "__main__":
-    render_window()
+    main()
