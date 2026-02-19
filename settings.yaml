@@ -79,5 +79,5 @@ ALIASES:
   LON_ALIAS: "lon"
 # Type booleans as "True" and "False"
 SKIP_ON_NULL_COORDS: "True"
-
+USE_FTFY: "False"
 OUTPUT_FILE: "output.kml"

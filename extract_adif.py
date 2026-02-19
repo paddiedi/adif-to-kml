@@ -38,9 +38,9 @@ def legacy_gen_adif_dictionary(file_path):
     return id_dict
 
 class adif_parser():
-    def __init__(self, filepath, settings):
+    def __init__(self, filepath, use_ftfy):
       self.filepath = filepath
-      self.settings = settings
+      self.use_ftfy = use_ftfy
       self.records = []
       # Line by line parser, also way more efficient when using __iter__ / yield!
     def __iter__(self):
@@ -49,7 +49,9 @@ class adif_parser():
             temp = {}
             for line in adif_file:
                 #print(line)
-                line_data = fix_encoding(line.strip())
+                line_data = line.strip()
+                if self.use_ftfy == "True":
+                    line_data = fix_encoding(line_data)
                 # One does not know how the file is structured.
                 # In the future tho might add a checker.
                 # This is the "safest" way (slowest).

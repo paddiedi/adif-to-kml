@@ -11,7 +11,7 @@ def get_settings():
    with open("settings.yaml") as settings_file:
     try:
       data = yaml.safe_load(settings_file)
-      print(data)
+      #print(data)
     except Exception:
         raise "Could not find settings file!"
     print("Settings found!")
@@ -120,7 +120,7 @@ def main():
         if filepath:
           # Parse the adif file for all the entries
           # Also using ftfy to fix some unicode errors :)
-          adif_parser = extract_adif.adif_parser(filepath, settings="")
+          adif_parser = extract_adif.adif_parser(filepath, SETTINGS["USE_FTFY"])
           custom_format = SETTINGS["DEFAULT_FORMAT"]
           data = [record for record in adif_parser]
           record_ids = adif_parser.records
