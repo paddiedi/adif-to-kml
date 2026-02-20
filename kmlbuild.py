@@ -25,7 +25,7 @@ def convert_into_kml(filename, kml_name, kml_description, records, alias, custom
     CALL_ALIAS = alias["CALL_ALIAS"]
     LAT_ALIAS = alias["LAT_ALIAS"]
     LON_ALIAS = alias["LON_ALIAS"]
-    with open(filename, "w") as output_file:
+    with open(filename, "w", encoding="utf-8") as output_file:
         output_file.write(kml_template["START"].format(name=kml_name, description=kml_description))
         
         for kml_entry in records:

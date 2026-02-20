@@ -45,7 +45,7 @@ class adif_parser():
       # Line by line parser, also way more efficient when using __iter__ / yield!
     def __iter__(self):
         record_start = False
-        with open(self.filepath) as adif_file:
+        with open(self.filepath, encoding="utf-8") as adif_file:
             temp = {}
             for line in adif_file:
                 #print(line)
@@ -75,7 +75,7 @@ class adif_parser():
     # Didn't know that back then when I made this. Worked for the file I used which was enough!
     @staticmethod
     def legacy_extract_adif_kml(file_path, use_defaults, **kwargs):
-        with open(file_path) as adif_input_file:
+        with open(file_path, encoding="utf-8") as adif_input_file:
             data = []
             if use_defaults:
                 entry_id_list = DEFAULT_ID_LIST
