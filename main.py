@@ -8,7 +8,7 @@ DEFAULT_OUTPUT_FILE="output.kml"
 #with open("aliases.json") as alias_file:
    #ALIASES = json.load(alias_file)
 def get_settings():
-   with open("settings.yaml") as settings_file:
+   with open("settings.yaml", encoding="utf-8") as settings_file:
     try:
       data = yaml.safe_load(settings_file)
       #print(data)

@@ -20,7 +20,7 @@ DEFAULT_ID_LIST = [
 from ftfy import fix_encoding
 def legacy_gen_adif_dictionary(file_path):
    id_dict = []
-   with open(file_path) as adif_input_file:
+   with open(file_path, encoding="utf-8") as adif_input_file:
     for line in adif_input_file:
        entries = line.split()
        stripped = entries[0].strip()

@@ -1,7 +1,7 @@
 from coords import maidenhead_transform
 from coords import parse_deg_min
 def cdata_format(kml_entry, format, chosen_entries):
-    print(kml_entry)
+    #print(kml_entry)
     try:
         cdata = """"""
         for key, value in format.items():
